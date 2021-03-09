@@ -82,7 +82,7 @@ public:
 		auto timer_callback = [this]() -> void {
 			if (offboard_setpoint_counter_ == 100) {
 				// Change to Offboard mode after 100 setpoints
-				this->publish_vehicle_command(VehicleCommand::VEHICLE_CMD_DO_SET_MODE, 1, 6);
+				this->publish_vehicle_command(VehicleCommand::VEHICLE_CMD_DO_SET_MODE, 1.0, 6.0);
 
 				// Arm the vehicle
 				this->arm();
@@ -146,15 +146,11 @@ void OffboardControl::disarm() const {
 void OffboardControl::publish_offboard_control_mode() const {
 	OffboardControlMode msg{};
 	msg.timestamp = timestamp_.load();
-	msg.ignore_thrust = true;
-	msg.ignore_attitude = true;
-	msg.ignore_bodyrate_x = true;
-	msg.ignore_bodyrate_y = true;
-	msg.ignore_bodyrate_z = true;
-	msg.ignore_position = false;
-	msg.ignore_velocity = true;
-	msg.ignore_acceleration_force = true;
-	msg.ignore_alt_hold = true;
+	msg.position = true;
+	msg.velocity = false;
+	msg.acceleration = false;
+	msg.attitude = false;
+	msg.body_rate = false;
 
 	offboard_control_mode_publisher_->publish(msg);
 }
